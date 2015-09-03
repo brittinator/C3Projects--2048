@@ -3,7 +3,7 @@ const MAXSTARTINGTILE = 4;
 const MINBOARDLOCALE = 0; // starting array index
 const MAXBOARDLOCALE = 3; // highest array index
 const BOARDSIZE = 4; // anything less than 4 is valid
-const WINNINGTILE = 2048;
+const WINNINGTILE = 16;
 // Constants -----------------
 var board;
 var score;
@@ -387,3 +387,22 @@ function reassigningTileAttr(oldRow, newRow, oldCol, newCol) {
   tile.attr("data-row", newRowLocation);
   tile.attr("data-col", newColLocation);
 }
+$('a').click(function(event) {
+    $("#dialog-modal").dialog(
+    {
+        width: 600,
+        height: 400,
+        open: function(event, ui)
+        {
+            var textarea = $('<textarea style="height: 276px;">');
+            $(textarea).redactor({
+                focus: true,
+                maxHeight: 300,
+                initCallback: function()
+                {
+                    this.code.set('<p>Lorem...</p>');
+                }
+            });
+        }
+     });
+})
