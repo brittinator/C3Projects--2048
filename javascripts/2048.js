@@ -303,20 +303,85 @@ function colRowIterator(directionFunction, startNum, endConditionalFunction, inc
   // startNum should be MAXBOARDLOCALE OR MINBOARDLOCALE
   // endConditionalFunction should be "function() {c > 0}" or "function() {c < 3}"
   // incrementor should be 1 or -1
-  for (var i = MINBOARDLOCALE; i <= MAXBOARDLOCALE; i++) {
-    var colRow = directionFunction(i);
-    for (var j = startNum; endConditionalFunction(j); j += incrementor) {
-      colRow(j);
+
+  // for (var r = MINBOARDLOCALE; r <= MAXBOARDLOCALE; r++) {
+  //   var moveIt = directionFunction(r);
+  //   for (var c = startNum; endConditionalFunction(c); c += incrementor) {
+  //     moveIt(c);
+  //   }
+  // }
+
+  for (var r = rowStart; rowConditional; r+= rowIncrementor) {
+    for (var c = colStart; colConditional; c += colIncrementor) {
+      var count = c;
+
+      function rNew(curCount) {
+        return moveDirection == "horizontal" ? curCount += rowIncrementor : r
+      }
+      function cNew(curCount) {
+        return moveDirection == "vertical" ? curCount += rowIncrementor : c
+      }
+
+      while (empty(board[r][c]) && endConditional(count, rowEnd)) {
+        if (!empty(board[rNew(count)][cNew(count)])) {
+          board[r][c] = board[rNew(count)][cNew(count)];
+          board[rNew(count)][cNew(count)] = undefined;
+          reassigningTileAttr(rNew(count), r, cNew(count), c);
+          actionOccurred = true;
+        }
+        count += incrementor;
+      }
+
+
+      while (empty(board[r][c]) && **count > 0 || count < 3**) {
+        if (!empty(board[** x || count + incrementor **][** count + incrementor || y**])) {
+          board[x][y] = board[** x || count + incrementor **][** count + incrementor || y**];
+          board[** x || count + incrementor **][** count + incrementor || y**] = undefined;
+          reassigningTileAttr((count + incrementor), x, (count + incrementor), y);
+          actionOccurred = true;
+        }
+        count += incrementor;
+      }
+    }
+
+
+  function goingDirection(r, incrementor) {
+    return function(c) {
+      var count = c;
+      while (empty(board[r][c]) && count [STUFFF]) {
+        if (!empty(board[-1][STUFF])) {
+          board[x][y] = board[STUFF][STUFF];
+          board[STUFF] = undefined;
+          reassigningTileAttr((count + incrementor), x, y, y);
+          actionOccurred = true;
+        }
+        count += incrementor;
+      }
+    }
+  goingDirectionRow()
+}
+
+function lessThan(val, finish) {
+  return val < finish;
+}
+
+function greaterThan(val) {
+  return val > finish;
+}
+
+function goingDirection(colRow, incrementor) {
+  return function(rowCol) {
+    var count = rowCol;
+    while (empty(board[x][y]) && count [STUFFF]) {
+      if (!empty(board[STUFF][STUFF])) {
+        board[x][y] = board[STUFF][STUFF];
+        board[STUFF] = undefined;
+        reassigningTileAttr((count + incrementor), x, y, y);
+        actionOccurred = true;
+      }
+      count += incrementor;
     }
   }
-}
-
-function lessThan(k) {
-  return k < MAXBOARDLOCALE;
-}
-
-function greaterThan(k) {
-  return k > MINBOARDLOCALE;
 }
 
 function goingUp(y) {
