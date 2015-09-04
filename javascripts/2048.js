@@ -232,16 +232,16 @@ function deleteVisualTile(row, col) {
 function moveTiles(direction) {
   switch(direction) {
     case 38: // up
-      colRowIterator(goingUp, MINBOARDLOCALE, lessThan, 1);
+      rowColIterator(0, lessThan, 3, 1, 0, lessThanOrEqual, 3, 1, "vertical", lessThan);
       break;
     case 40: // down
-      colRowIterator(goingDown, MAXBOARDLOCALE, greaterThan, -1);
+      rowColIterator(3, greaterThan, 0, -1, 0, lessThanOrEqual, 3, 1, "vertical", greaterThan);
       break;
     case 37: // left
-      colRowIterator(goingLeft, MINBOARDLOCALE, lessThan, 1);
+      rowColIterator(0, greaterThanOrEqual, 3, 1, 0, lessThan, 3, 1, "horizontal", lessThan);
       break;
     case 39: // right
-      colRowIterator(goingRight, MAXBOARDLOCALE, greaterThan, -1);
+      rowColIterator(3, greaterThanOrEqual, 0, -1, 3, greaterThan, 0, -1, "horizontal", greaterThan);
       break;
   }
 }
@@ -298,21 +298,9 @@ function noMovesAvailable() {
   return (moves == 0);
 }
 
-function colRowIterator(directionFunction, startNum, endConditionalFunction, incrementor) {
-  // directionFunction should be goingUp(), goingDown(), etc.
-  // startNum should be MAXBOARDLOCALE OR MINBOARDLOCALE
-  // endConditionalFunction should be "function() {c > 0}" or "function() {c < 3}"
-  // incrementor should be 1 or -1
-
-  // for (var r = MINBOARDLOCALE; r <= MAXBOARDLOCALE; r++) {
-  //   var moveIt = directionFunction(r);
-  //   for (var c = startNum; endConditionalFunction(c); c += incrementor) {
-  //     moveIt(c);
-  //   }
-  // }
-
-  for (var r = rowStart; rowConditional; r+= rowIncrementor) {
-    for (var c = colStart; colConditional; c += colIncrementor) {
+function rowColIterator(rowStart, rowConditional, rowEnd, rowIncrementor, colStart, colConditional, colEnd, colIncrementor, moveDirection, endConditional) {
+  for (var r = rowStart; rowConditional(r, rowEnd); r+= rowIncrementor) {
+    for (var c = colStart; colConditional(c, colEnd); c += colIncrementor) {
       var count = c;
 
       function rNew(curCount) {
@@ -329,119 +317,92 @@ function colRowIterator(directionFunction, startNum, endConditionalFunction, inc
           reassigningTileAttr(rNew(count), r, cNew(count), c);
           actionOccurred = true;
         }
-        count += incrementor;
-      }
-
-
-      while (empty(board[r][c]) && **count > 0 || count < 3**) {
-        if (!empty(board[** x || count + incrementor **][** count + incrementor || y**])) {
-          board[x][y] = board[** x || count + incrementor **][** count + incrementor || y**];
-          board[** x || count + incrementor **][** count + incrementor || y**] = undefined;
-          reassigningTileAttr((count + incrementor), x, (count + incrementor), y);
-          actionOccurred = true;
-        }
-        count += incrementor;
+        count += rowIncrementor;
       }
     }
-
-
-  function goingDirection(r, incrementor) {
-    return function(c) {
-      var count = c;
-      while (empty(board[r][c]) && count [STUFFF]) {
-        if (!empty(board[-1][STUFF])) {
-          board[x][y] = board[STUFF][STUFF];
-          board[STUFF] = undefined;
-          reassigningTileAttr((count + incrementor), x, y, y);
-          actionOccurred = true;
-        }
-        count += incrementor;
-      }
-    }
-  goingDirectionRow()
+  }
 }
+
+// NOTES
+// // going up
+// for (var r = 0; r < 3; r++) {
+//   for (var c = 0; c <= 3; r++) { \\
+//     var count = r;
+//     while (empty(board[r][c]) && count < 3) { //*
+//       if (!empty(board[count + 1][c])) {
+//         board[r][c] = board[count + 1][c];
+//         board[count + 1][c] = undefined;
+//         reassigningTileAttr((count + 1), r, c, c);
+//         actionOccurred = true;
+//       }
+//       count++;
+//     }
+//   }
+// }
+//
+// //going down
+// for (var r = 3; r > 0; r--) {
+//   for (var c = 0; c <= 3; r++) { \\
+//     var count = r;
+//     while (empty(board[r][c]) && count > 0) { //**
+//       if (!empty(board[count - 1][c])) {
+//         board[r][c] = board[count - 1][c];
+//         board[count - 1][c] = undefined;
+//         reassigningTileAttr((count - 1), r, c, c);
+//         actionOccurred = true;
+//       }
+//       count--;
+//     }
+//   }
+// }
+//
+// //going left
+// for (var r = 0; r <= 3; r++) {
+//   for (var c = 0; c < 3; r++) {
+//     var count = c;
+//     while (empty(board[r][c]) && count < 3) { //*
+//       if (!empty(board[r][count + 1])) {
+//         board[r][y] = board[r][count + 1];
+//         board[r][count + 1] = undefined;
+//         reassigningTileAttr(r, r, (count + 1), c);
+//         actionOccurred = true;
+//       }
+//       count++;
+//     }
+//   }
+// }
+//
+// //going right
+// for (var r = 3; r >= 0; r--) {
+//   for (var c = 3; c > 0; r--) {
+//     var count = c;
+//     while (empty(board[r][c]) && count > 0) { //**
+//       if (!empty(board[r][count - 1])) {
+//         board[r][c] = board[r][count - 1];
+//         board[r][count - 1] = undefined;
+//         reassigningTileAttr(r, r, (count - 1), c);
+//         actionOccurred = true;
+//       }
+//       count--;
+//     }
+//   }
+// }
+
 
 function lessThan(val, finish) {
   return val < finish;
 }
 
-function greaterThan(val) {
+function lessThanOrEqual(val, finish) {
+  return val <= finish;
+}
+
+function greaterThan(val, finish) {
   return val > finish;
 }
 
-function goingDirection(colRow, incrementor) {
-  return function(rowCol) {
-    var count = rowCol;
-    while (empty(board[x][y]) && count [STUFFF]) {
-      if (!empty(board[STUFF][STUFF])) {
-        board[x][y] = board[STUFF][STUFF];
-        board[STUFF] = undefined;
-        reassigningTileAttr((count + incrementor), x, y, y);
-        actionOccurred = true;
-      }
-      count += incrementor;
-    }
-  }
-}
-
-function goingUp(y) {
-  return function(x) {
-    var count = x;
-    while (empty(board[x][y]) && count < 3) {
-      if (!empty(board[count + 1][y])) {
-        board[x][y] = board[count + 1][y];
-        board[count + 1][y] = undefined;
-        reassigningTileAttr((count + 1), x, y, y);
-        actionOccurred = true;
-      }
-      count++;
-    }
-  }
-}
-
-function goingDown(y) {
-  return function(x) {
-    var count = x;
-    while (empty(board[x][y]) && count > 0) {
-      if (!empty(board[count - 1][y])) {
-        board[x][y] = board[count - 1][y];
-        board[count - 1][y] = undefined;
-        reassigningTileAttr((count - 1), x, y, y);
-        actionOccurred = true;
-      }
-      count--;
-    }
-  }
-}
-
-function goingLeft(x) {
-  return function(y) {
-    var count = y;
-    while (empty(board[x][y]) && count < 3) {
-      if (!empty(board[x][count + 1])) {
-        board[x][y] = board[x][count + 1];
-        board[x][count + 1] = undefined;
-        reassigningTileAttr(x, x, (count + 1), y);
-        actionOccurred = true;
-      }
-      count++;
-    }
-  }
-}
-
-function goingRight(x) {
-  return function(y) {
-    var count = y;
-    while (empty(board[x][y]) && count > 0) {
-      if (!empty(board[x][count - 1])) {
-        board[x][y] = board[x][count - 1];
-        board[x][count - 1] = undefined;
-        reassigningTileAttr(x, x, (count - 1), y);
-        actionOccurred = true;
-      }
-      count--;
-    }
-  }
+function greaterThanOrEqual(val, finish) {
+  return val > finish;
 }
 
 function reassigningTileAttr(oldRow, newRow, oldCol, newCol) {
