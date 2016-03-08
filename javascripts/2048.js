@@ -199,20 +199,41 @@ function incrementScore(value) {
 // Movement ------------------------------------------------------
 function moveTiles(direction) {
   switch(direction) {
-    case 38: // up
-      colRowIterator(goingUp, MINBOARDLOCALE, lessThan, 1);
+    case 38: // upfor (i = 0; i <= 3; i++) { // for each column
+      for(i=0; i<=3; i++)
+        var row = goingUp(i);
+        for (j = 0; j < 3; j++) { // for each row
+          row(j);
+        }
+      }
       break;
     case 40: // down
-      colRowIterator(goingDown, MAXBOARDLOCALE, greaterThan, -1);
+      for (i = 0; i <= 3; i++) { // for each column
+        var row = goingDown(i);
+        for (j = 3; j > 0; j--) { // for each row
+          row(j);
+        }
+      }
       break;
     case 37: // left
-      colRowIterator(goingLeft, MINBOARDLOCALE, lessThan, 1);
+      for (i = 0; i <= 3; i++) { // for each row
+         var col = goingLeft(i);
+         for (j = 0; j < 3; j++) { // for each column
+           col(j);
+         }
+       }
       break;
     case 39: // right
-      colRowIterator(goingRight, MAXBOARDLOCALE, greaterThan, -1);
+      for (i=0; i<= 3; i++) {
+        var col = goingRight(i);
+        for (j=3; j>0; j--) {
+          col(j);
+        }
+      }
       break;
   }
 }
+
 
 function colRowIterator(directionFunction, startNum, endConditionalFunction, incrementor) {
   // directionFunction should be goingUp(), goingDown(), etc.
